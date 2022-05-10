@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,5 +71,45 @@ public class EmployeePayRollService
 	            }
 	        }
 	        return 0.0;
+	    }
+	    public void getEmployee(LocalDate start, LocalDate end) {
+	        ArrayList<Employee> empSelected = new ArrayList<>();
+	        String select = "SELECT * FROM payroll_service WHERE START_DATE BETWEEN ? AND ?";
+	        String sDate = String.valueOf(start);
+	        String eDate = String.valueOf(end);
+	        try {
+	            preparedStatement = connection.prepareStatement(select);
+	            preparedStatement.setString(1, sDate);
+	            preparedStatement.setString(2, eDate);
+	            ResultSet resultSet = preparedStatement.executeQuery();
+	            while (resultSet.next()) {
+	                Employee employee = new Employee();
+
+	                employee.setID(resultSet.getInt("ID"));
+	                employee.setNAME(resultSet.getString("NAME"));
+	                employee.setEmployee_ID(resultSet.getInt("EMPLOYEE_ID"));
+	                employee.setPhone_number(resultSet.getInt("Phone_Number"));
+	                employee.setAddress(resultSet.getString("Address"));
+	                employee.setDepartment(resultSet.getString("Department"));
+	                employee.setDepartment_ID(resultSet.getInt("DEPARTMENT_ID"));
+	                employee.setGENDER(resultSet.getString("GENDER"));
+	                employee.setBasic_pay(resultSet.getDouble("Basic_Pay"));
+	                employee.setDeductions(resultSet.getDouble("Deductions"));
+	                employee.setTaxable_pay(resultSet.getDouble("TaxablePay"));
+	                employee.setTax(resultSet.getDouble("Tax"));
+	                employee.setNet_pay(resultSet.getDouble("Net_Pay"));
+	                employee.setSALARY(resultSet.getDouble("SALARY"));
+	                employee.setSTART_DATE(resultSet.getString("Start_DATE"));
+	                empList.add(employee);
+
+	                empSelected.add(employee);
+	            }
+	            for (Employee employee : empSelected) {
+	                System.out.println(employee);
+	            }
+
+	        } catch (SQLException e) {
+	            throw new EmployeeException("Invalid date");
+	        }
 	    }
 }
