@@ -112,4 +112,30 @@ public class EmployeePayRollService
 	            throw new EmployeeException("Invalid date");
 	        }
 	    }
+	    public void calculateQuery(String calculate) {
+	        List<Employee> result = new ArrayList<Employee>();
+
+	        try {
+	            preparedStatement = connection.prepareStatement(calculate);
+	            ResultSet resultSet = preparedStatement.executeQuery();
+	            while (resultSet.next()) {
+	                Employee employee = new Employee();
+	                employee.setGENDER(resultSet.getString(1));
+	                employee.setBasic_pay(resultSet.getDouble(2));
+
+	                result.add(employee);
+	            }
+	            if (calculate.contains("COUNT")) {
+	                for (Employee i : result) {
+	                    System.out.println("GENDER: " + i.getGENDER() + " COUNT: " + i.getBasic_pay());
+	                }
+	            } else {
+	                for (Employee i : result) {
+	                    System.out.println("GENDER: " + i.getGENDER() + " Basic pay: " + i.getBasic_pay());
+	                }
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 }
